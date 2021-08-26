@@ -169,7 +169,7 @@ static ErlNifFunc nif_funcs[] =
     {"ref_write_with_lock", 2, ref_write_with_lock}
   };
 
-ERL_NIF_INIT(native_refs,
+ERL_NIF_INIT(nativerefs,
              nif_funcs,
              load,  // load
              NULL,  // upgrade
