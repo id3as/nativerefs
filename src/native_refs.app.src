@@ -1,0 +1,14 @@
+{application, native_refs,
+ [
+  {description, "Native Ref"},
+  {vsn, "1"},
+  {registered, []},
+  {included_applications, [
+                          ]},
+  {applications, [
+                  kernel,
+                  stdlib
+                 ]},
+  {modules, []},
+  {env, []}
+ ]}.

@@ -16,7 +16,7 @@
 -on_load(init/0).
 
 init() ->
-  PrivDir = code:priv_dir(id3as_playground),
+  PrivDir = code:priv_dir(native_refs),
   File = filename:join([PrivDir, ?MODULE]),
 
   ok = erlang:load_nif(File, 0).
