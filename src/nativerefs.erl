@@ -1,4 +1,4 @@
--module(native_refs).
+-module(nativerefs).
 
 -export([ ref_new/1
         , ref_read/1
@@ -16,7 +16,7 @@
 -on_load(init/0).
 
 init() ->
-  PrivDir = code:priv_dir(native_refs),
+  PrivDir = code:priv_dir(nativerefs),
   File = filename:join([PrivDir, ?MODULE]),
 
   ok = erlang:load_nif(File, 0).

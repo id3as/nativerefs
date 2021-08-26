@@ -44,16 +44,16 @@ ifeq ($(UNAME), Linux)
 	DEFAULT_CFLAGS += -DLINUX
 endif
 
-all: priv/native_refs.$(SO_EXT)
+all: priv/nativerefs.$(SO_EXT)
 
 
 CFLAGS += $(DEFAULT_CFLAGS)
 LDFLAGS += $(DEFAULT_LDFLAGS)
 
-c_src/native_refs.o: c_src/native_refs.c
+c_src/nativerefs.o: c_src/nativerefs.c
 	@$(CC) $< $(CPPFLAGS) $(CFLAGS) -c -o $@
 
-priv/native_refs.$(SO_EXT): c_src/native_refs.o | priv/
+priv/nativerefs.$(SO_EXT): c_src/nativerefs.o | priv/
 	@$(CXX) $^ $(LDFLAGS) -o $@ 2> >(grep -v "corrupt .drectve at end of def file")
 
 clean:

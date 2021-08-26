@@ -1,4 +1,4 @@
-{application, native_refs,
+{application, nativerefs,
  [
   {description, "Native Ref"},
   {vsn, "1"},
