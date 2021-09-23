@@ -13,11 +13,7 @@ erl_root_dir = $(shell erl -eval 'io:format(standard_error, "~s", [os:getenv("RO
 ifeq ($(UNAME), MINGW64_NT-10.0)
   ERLDIR = $(call +s,$(addsuffix ../.., $(dir $(call s+,$(shell which erl)))))
 else
-  ifeq ($(_KERL_ACTIVE_DIR),)
-    ERLDIR = $(call erl_root_dir)
-  else
-    ERLDIR = $(_KERL_ACTIVE_DIR)
-  endif
+  ERLDIR = $(call erl_root_dir)
 endif
 
 #------------------------------------------------------------
