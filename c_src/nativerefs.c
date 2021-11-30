@@ -41,6 +41,31 @@ static ERL_NIF_TERM ref_read(ErlNifEnv* env, int argc, const ERL_NIF_TERM argv[]
   return enif_make_tuple2(env, enif_make_atom(env, "ok"), enif_make_copy(env, r->term));
 }
 
+static ERL_NIF_TERM ref_try_read_with_lock(ErlNifEnv* env, int argc, const ERL_NIF_TERM argv[])
+{
+  if(argc != 1) {
+    return enif_make_tuple2(env, enif_make_atom(env, "error"), enif_make_atom(env, "bad_arity")); 
+  }
+
+  nif_globals *globals = (nif_globals *) enif_priv_data(env);
+  ref *r = NULL;
+  
+  if(!enif_get_resource(env, argv[0], globals->ref_resource_type, (void**)&r)) {
+    return enif_make_tuple2(env, enif_make_atom(env, "error"), enif_make_atom(env, "badarg")); 
+  }
+
+  ref_lock *l = (ref_lock *) enif_alloc_resource(globals->ref_lock_resource_type, sizeof(ref_lock));
+  l->ref = r;
+  if(enif_mutex_trylock(r->mutex) == 0) {
+    enif_keep_resource(r);
+    ERL_NIF_TERM resource = enif_make_resource(env, l);
+    enif_release_resource(l);
+    return enif_make_tuple3(env, enif_make_atom(env, "ok"), resource, enif_make_copy(env, r->term));
+  } else {
+    return enif_make_atom(env, "busy");
+  }
+}
+
 static ERL_NIF_TERM ref_read_with_lock(ErlNifEnv* env, int argc, const ERL_NIF_TERM argv[])
 {
   if(argc != 1) {
@@ -164,8 +189,9 @@ static ErlNifFunc nif_funcs[] =
     {"ref_new", 1, ref_new},
     {"ref_read", 1, ref_read},
     {"ref_try_write", 2, ref_try_write},
-    {"ref_write", 2, ref_write, ERL_NIF_DIRTY_JOB_CPU_BOUND},
-    {"ref_read_with_lock", 1, ref_read_with_lock},
+    {"ref_try_read_with_lock", 1, ref_try_read_with_lock}, 
+    {"ref_write", 2, ref_write, ERL_NIF_DIRTY_JOB_CPU_BOUND}, // both of these calls *wait* for a lock
+    {"ref_read_with_lock", 1, ref_read_with_lock, ERL_NIF_DIRTY_JOB_CPU_BOUND}, // which is potentially waiting
     {"ref_write_with_lock", 2, ref_write_with_lock}
   };
 

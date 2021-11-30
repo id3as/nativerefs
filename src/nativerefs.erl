@@ -4,6 +4,7 @@
         , ref_read/1
         , ref_write/2
         , ref_try_write/2
+        , ref_try_read_with_lock/1
         , ref_read_with_lock/1
         , ref_write_with_lock/2
         ]).
@@ -35,6 +36,10 @@ ref_write(_Ref, _Value) ->
 
 -spec ref_try_write(native_ref(), term()) -> ok | busy | native_ref_error().
 ref_try_write(_Ref, _Value) ->
+  erlang:nif_error(nif_library_not_loaded).
+
+-spec ref_try_read_with_lock(native_ref()) -> { ok, native_ref_lock(), term() } | busy | native_ref_error().
+ref_try_read_with_lock(_Ref) ->
   erlang:nif_error(nif_library_not_loaded).
 
 -spec ref_read_with_lock(native_ref()) -> { ok, native_ref_lock(), term() } | native_ref_error().
