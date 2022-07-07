@@ -9,11 +9,10 @@ space :=
 space +=
 s+ = $(subst $(space),+,$1)
 +s = $(subst +,\$(space),$1)
-erl_root_dir = $(shell erl -eval 'io:format(standard_error, "~s", [os:getenv("ROOTDIR")]), erlang:halt().' 2>&1 >/dev/null)
 ifeq ($(UNAME), MINGW64_NT-10.0)
   ERLDIR = $(call +s,$(addsuffix ../.., $(dir $(call s+,$(shell which erl)))))
 else
-  ERLDIR = $(call erl_root_dir)
+  ERLDIR = $(shell which erl | sed 's|/bin/erl||g')/lib/erlang
 endif
 
 #------------------------------------------------------------
