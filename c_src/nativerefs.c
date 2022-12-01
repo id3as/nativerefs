@@ -17,7 +17,7 @@ typedef struct _waiter {
 typedef struct _ref {
   ERL_NIF_TERM term;
   ErlNifMutex* mutex;
-  uint32_t locked;
+  int locked;
   waiter *waiters;
 } ref;
 
