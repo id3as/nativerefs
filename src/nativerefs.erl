@@ -43,7 +43,32 @@ ref_try_read_with_lock(_Ref) ->
   erlang:nif_error(nif_library_not_loaded).
 
 -spec ref_read_with_lock(native_ref()) -> { ok, native_ref_lock(), term() } | native_ref_error().
-ref_read_with_lock(_Ref) ->
+ref_read_with_lock(Ref) ->
+  ref_read_with_lock(Ref, 0).
+
+ref_read_with_lock(Ref, N) when N < 5 ->
+  case ref_read_with_lock_(Ref, undefined) of
+    busy ->
+      timer:sleep(0),
+      ref_read_with_lock(Ref, N + 1);
+    Other ->
+      Other
+  end;
+
+ref_read_with_lock(Ref, N) ->
+
+  MsgRef = make_ref(),
+  case ref_read_with_lock_(Ref, MsgRef) of
+    busy ->
+      receive
+        MsgRef ->
+          ref_read_with_lock(Ref, N)
+      end;
+    Other ->
+      Other
+  end.
+
+ref_read_with_lock_(_Ref, _MsgRef) ->
   erlang:nif_error(nif_library_not_loaded).
 
 -spec ref_write_with_lock(native_ref_lock(), term()) -> ok | native_ref_error().
