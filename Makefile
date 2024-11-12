@@ -10,11 +10,11 @@ space +=
 s+ = $(subst $(space),+,$1)
 +s = $(subst +,\$(space),$1)
 ifeq ($(UNAME), MINGW64_NT-10.0)
-  ERLDIR = $(call +s,$(addsuffix ../.., $(dir $(call s+,$(shell which erl)))))
+  ERLDIR ?= $(call +s,$(addsuffix ../.., $(dir $(call s+,$(shell which erl)))))
 else ifneq ($(_KERL_ACTIVE_DIR),)
-  ERLDIR=$(_KERL_ACTIVE_DIR)
+  ERLDIR ?= $(_KERL_ACTIVE_DIR)
 else
-  ERLDIR = $(shell which erl | awk '{if ($$1 ~ /lib\/erlang\/erts/) { gsub("/lib/erlang/erts.*/bin/erl", "", $$1); print } else { gsub("/bin/erl", "", $$1); print }}')/lib/erlang
+  ERLDIR ?= $(shell which erl | awk '{if ($$1 ~ /lib\/erlang\/erts/) { gsub("/lib/erlang/erts.*/bin/erl", "", $$1); print } else { gsub("/bin/erl", "", $$1); print }}')/lib/erlang
 endif
 
 #------------------------------------------------------------
